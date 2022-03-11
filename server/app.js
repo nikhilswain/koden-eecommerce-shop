@@ -17,6 +17,7 @@ app.use(helmet());
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', isAuthenticated, require('./routes/user'));
+app.use('/api/product', isAuthenticated, require('./routes/product'));
 
 app.use('*', (req, res) => {
     res.status(404).send('Not Found');

@@ -40,4 +40,15 @@ function isAdmin(req, res, next) {
     }
 }
 
-module.exports = { isAuthenticated, isAdmin };
+//  check if user is manager
+function isManager(req, res, next) {
+    if (req.user.userType === 'manager') {
+        next();
+    }  else {
+        res.status(403).json({
+            message: 'User not manager'
+        });
+    }
+}
+
+module.exports = { isAuthenticated, isAdmin, isManager };

@@ -1,35 +1,15 @@
-const User = require('../../models/User.model');
-
 const requestHandler = {
   get: async function (req, res) {
-    await User.find({}, function (err, users) {
-      if (err) console.log(err)
-      console.log(user);
-    });
-    res.send('hello world!', data);
+    res.send('hello world!');
   },
   post: async function (req, res) {
-    try {
-      const {
-        username, password, email, role, designation
-      } = req.body;
-
-      const user = new User({
-        username,  email, role, designation, hash: '123', salt: '123'
-      });
-      console.log(user);
-      const savedUser = await user.save();
-      res.send(savedUser);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send(error);
-    }
+    res.send('hello world!');
   },
   put: async function (req, res) {
-    console.log('hit');
+    res.send('hit!');
   },
   delete: async function (req, res) {
-    console.log('hit');
+    res.send('hit!');
   }
 };
 

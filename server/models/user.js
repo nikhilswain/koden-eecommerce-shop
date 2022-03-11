@@ -15,10 +15,14 @@ const userSchema = new mongoose.Schema(
             unique: true,
             type: String,
             required: true,
-            maxlength: 100
+            trim: true,
+            minlength: 5,
+            maxlength: 50,
+            lowercase: true
         },
         password: {
             type: String,
+            select: false,
             required: true,
             maxlength: 255
         },
@@ -27,6 +31,11 @@ const userSchema = new mongoose.Schema(
             required: true,
             enum: ['visitor', 'admin', 'manager'],
             default: 'visitor'
+        },
+        cart: {
+            type: [mongoose.Types.ObjectId],
+            ref: "Product",
+            default: [],
         },
         refreshToken: {
             type: String
