@@ -3,8 +3,8 @@ const { IaddToCart, Icheckout, IgetCart, IremoveFromCart, IresetCart } = require
 const { isAuthenticated } = require('../middlewares/auth');
 
 router.get('/', isAuthenticated, IgetCart);
-router.post('/add', isAuthenticated, IaddToCart);
-router.post('/remove', isAuthenticated, IremoveFromCart);
+router.post('/', isAuthenticated, IaddToCart);
+router.delete('/', isAuthenticated, IremoveFromCart);
 router.post('/checkout', isAuthenticated, Icheckout);
 router.post('/reset', isAuthenticated, IresetCart);
 

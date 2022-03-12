@@ -20,7 +20,7 @@ exports.IgetProduct = async (req, res) => {
 //  @access  Public
 exports.IgetProductsByCategory = async (req, res) => {
     try {
-        const categories = ['electronics', 'clothing', 'consetics', 'others'];
+        const categories = ['electronics', 'clothes', 'cosmetics', 'others'];
         if (!categories.includes(req.params.category)) {
             throw {
                 status: 400,
@@ -47,7 +47,7 @@ exports.IgetProductById = async (req, res) => {
                 message: "Invalid product id"
             }
         }
-        const product = await getProduct(productId, 'image');
+        const product = await getProduct(productId);
         res.status(200).json(product);
     } catch (error) {
         console.log(error);
@@ -60,7 +60,11 @@ exports.IgetProductById = async (req, res) => {
 //  @access  Private
 exports.IpostProduct = async (req, res) => {
     try {
-        const product = await postProduct(req.body);
+        const { name, category, description, price, quantity } = req.body;
+        const createdBy = req.user._id;
+        const product = await postProduct({
+            name, category, description, price, quantity, createdBy
+        });
         res.status(200).json(product);
     } catch (error) {
         console.log(error);

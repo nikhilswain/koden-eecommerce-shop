@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/user');
 const Product = require('../models/product');
 
@@ -20,6 +21,13 @@ exports.getCart =  async (userRef) => {
 
 exports.addToCart = async (userRef, productRef, quantity) => {
     try {
+        //  check if userRef & productRef are valid mongoose objects
+        if (!mongoose.Types.ObjectId.isValid(userRef) && !mongoose.Types.ObjectId.isValid(productRef)) {
+            throw {
+                message: 'invalid product',
+                status: 404
+            }
+        }
         if (quantity <= 0) {
             throw {
                 message: 'Quantity must be greater than 0',
@@ -33,6 +41,13 @@ exports.addToCart = async (userRef, productRef, quantity) => {
                 status: 404
             }
         } 
+        //!! TODO NOT WORKING
+        // if (product.quantity < quantity ) {
+        //     throw {
+        //         message: 'product quantity is not enough!',
+        //         status: 400
+        //     }
+        // }
         const user = await User.findOne({_id: userRef});
         if (!user) {
             throw {
@@ -66,7 +81,7 @@ exports.removeFromCart = async (userRef, productRef) => {
         } 
         const item = user.cart.find(item => item.product.toString() === productRef.toString());
         if (item) {
-            if (item.quantity > 2) {
+            if (item.quantity >= 2) {
                 item.quantity -= 1;
             } else {
                 user.cart.splice(user.cart.indexOf(item), 1);
@@ -97,7 +112,7 @@ exports.resetCart = async (userRef) => {
     }
 }
 
-exports.checkoutCart = async () => {
+exports.checkoutCart = async (userRef) => {
     try {
         const user = await User.findOne({_id: userRef});
         if (!user) {

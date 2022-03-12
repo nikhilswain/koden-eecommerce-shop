@@ -20,7 +20,7 @@ exports.IgetCart = async (req, res) => {
     }
 }
 
-//  @route  POST api/cart/add
+//  @route  POST api/cart/
 //  @desc   Add product to cart
 //  @access Protected
 exports.IaddToCart = async (req, res) => {
@@ -48,7 +48,7 @@ exports.IaddToCart = async (req, res) => {
     }
 }
 
-//  @route  POST api/cart/remove
+//  @route  DELETE api/cart/
 //  @desc   Remove product from cart
 //  @access Protected
 exports.IremoveFromCart = async (req, res) => {
