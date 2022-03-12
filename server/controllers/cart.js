@@ -91,14 +91,15 @@ exports.IresetCart = async (req, res) => {
 //  @access Protected
 exports.Icheckout = async (req, res) => {
     try {
-        const out = await checkoutCart(req.user._id);
+        const addressRef = req.body.address;
+        const out = await checkoutCart(req.user._id, addressRef);
         if (!out) {
             throw {
                 status: 400,
                 message: 'action failed!'
             }
         }
-        res.status(200).json({cart: out});
+        res.status(200).json({order: out});
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
