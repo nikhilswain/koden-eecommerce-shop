@@ -6,13 +6,15 @@ const { isAuthenticated } = require("./middlewares/auth");
 require("dotenv").config();
 
 const app = express();
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.log(err));
 
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
+
+// Test Route for Frontend
+app.get('/api/test', (_, res) => {
+    res.json({message: 'hello world'});
+});
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', isAuthenticated, require('./routes/user'));
@@ -23,6 +25,8 @@ app.use('*', (req, res) => {
     res.status(404).send('Not Found');
 });
 
-app.listen(process.env.PORT || 1337, () => {
+app.listen(process.env.PORT || 1337, async () => {
     console.log("Server is running at http://localhost:1337");
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Connected to MongoDB");
 });

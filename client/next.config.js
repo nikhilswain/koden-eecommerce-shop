@@ -1,9 +1,11 @@
 module.exports = {
   reactStrictMode: true,
-  env:{
-    MONGODB_URI : process.env.MYACCESSTOKEN,
-    DB_NAME: process.env.MYSPACEID,
-    DEV_URL: process.env.DEV_URL,
-    PROD_URL: process.env.PROD_URL
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:1337/api/:path*' // Proxy to Backend
+      }
+    ]
   }
 }

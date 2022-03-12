@@ -12,5 +12,8 @@
 
 2.  NextJs
 
-    *   API: https://nextjs.org/docs/api-routes/introduction
+    *   API intro: https://nextjs.org/docs/api-routes/introduction
+    *   Backend Proxy: https://nextjs.org/docs/api-reference/next.config.js/rewrites
+        *   https://stackoverflow.com/questions/60925133/proxy-to-backend-with-default-next-js-dev-server
+    *   
     
