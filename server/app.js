@@ -1,6 +1,5 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const helmet = require("helmet");
 const { isAuthenticated } = require("./middlewares/auth");
@@ -18,6 +17,7 @@ app.use(helmet());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', isAuthenticated, require('./routes/user'));
 app.use('/api/product', isAuthenticated, require('./routes/product'));
+app.use('/api/cart', isAuthenticated, require('./routes/cart'));
 
 app.use('*', (req, res) => {
     res.status(404).send('Not Found');

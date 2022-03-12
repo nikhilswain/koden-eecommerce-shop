@@ -51,4 +51,15 @@ function isManager(req, res, next) {
     }
 }
 
-module.exports = { isAuthenticated, isAdmin, isManager };
+//  check if user is from internal team
+function isInternal(req, res, next) {
+    if (req.user.userType === 'admin' || req.user.userType === 'manager') {
+        next();
+    }  else {
+        res.status(403).json({
+            message: 'User not authorized'
+        });
+    }
+}
+
+module.exports = { isAuthenticated, isAdmin, isManager, isInternal };

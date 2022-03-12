@@ -1,8 +1,9 @@
 const router = require("express").Router()
-const { getMe, getByParam, deleteMe } = require('../controllers/user');
+const { IgetUser: getMe, IgetUserById: getByParam, IdeleteUser: deleteMe } = require('../controllers/user');
+const { isAuthenticated, isInternal } = require('../middlewares/auth');
 
-router.get('/', getMe);
-router.get('/:id', getByParam);
-router.delete('/', deleteMe);
+router.get('/', isAuthenticated, getMe);
+router.get('/:id', isAuthenticated, isInternal, getByParam);
+router.delete('/', isAuthenticated, deleteMe);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const { getUser, deleteUser } = require('../services/user');
 // @route   GET api/user
 // @desc    Get current user's info
 // @access  Protected
-exports.getMe = async (req, res) => {
+exports.IgetUser = async (req, res) => {
     try {
         const user = await getUser(req.user._id, "-password -__v -refreshToken -refreshExpires");
         if (!user) {
@@ -22,7 +22,7 @@ exports.getMe = async (req, res) => {
 // @route   GET api/user/:id
 // @desc    Get user by id
 // @access  Protected
-exports.getByParam = async (req, res) => {
+exports.IgetUserById = async (req, res) => {
     try {
         const user = await getUser(req.params.id, "username stripeId isSubscribed email createdAt");
         if (!user) {
@@ -41,7 +41,7 @@ exports.getByParam = async (req, res) => {
 // @route   DELETE api/user/
 // @desc    Delete user by id
 // @access  Protected
-exports.deleteMe = async (req, res) => {
+exports.IdeleteUser = async (req, res) => {
     try {
         const password = req.body.password;
         if (!password)

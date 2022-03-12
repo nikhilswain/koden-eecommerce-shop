@@ -33,8 +33,17 @@ const userSchema = new mongoose.Schema(
             default: 'visitor'
         },
         cart: {
-            type: [mongoose.Types.ObjectId],
-            ref: "Product",
+            type: [{
+                product: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Product',
+                },
+                quantity: {
+                    type: Number,
+                    required: true,
+                    min: 1
+                },
+            }],
             default: [],
         },
         refreshToken: {
@@ -85,7 +94,7 @@ userSchema.methods.genTokens = function () {
                 userType: this.userType,
             }, 
             process.env.JWT_SECRET, // secret
-            { expiresIn: "30m" }    // expires in 30 minutes
+            { expiresIn: "3d" }    // expires in 30 minutes
         );
         const refreshToken = crypto.randomBytes(16).toString('hex');
         this.refreshToken = refreshToken;

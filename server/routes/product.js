@@ -3,15 +3,10 @@ const { IdeleteProduct, IgetProductById, IgetProduct, IgetProductsByCategory, Ip
 const { isAuthenticated, isManager } = require("../middlewares/auth");
 
 router.get('/all', IgetProduct);
-
 router.get('/:id', IgetProductById);
-
 router.get('/category/:category', IgetProductsByCategory);
-
 router.post('/', isAuthenticated, isManager, IpostProduct);
-
 router.delete('/:id', isAuthenticated, isManager, IdeleteProduct);
-
 router.put('/:id', isAuthenticated, isManager, IupdateProduct);
 
 module.exports = router;
