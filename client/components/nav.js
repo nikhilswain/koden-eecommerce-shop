@@ -8,16 +8,18 @@ export default function Nav() {
             
         </div>
         <nav className={styles.nav}>
-            <ul>
+            <ul className={styles.ul}>
                 <li>
                     <a href="/">Home</a>
                 </li>
-                <li>
-                    <a href="/about">About</a>
-                </li>
-                <li>
-                    <a href="/contact">Contact</a>
-                </li>
+            </ul>
+            <ul className={styles.ul}>
+            <li>
+                <a href="/login">Login</a>
+            </li>
+            <li>
+                <a href="/cart">cart</a>
+            </li>
             </ul>
         </nav>
     </div>

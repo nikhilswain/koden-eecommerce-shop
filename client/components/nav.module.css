@@ -1,0 +1,11 @@
+.nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #212121;
+    color: #fff;
+}
+
+ .ul {
+     display: flex;
+ }
