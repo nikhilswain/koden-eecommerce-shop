@@ -1,8 +1,8 @@
 const Address = require('../models/address');
 
-exports.getAddressesByUser = async (userRef) => {
+exports.getAddressesByUser = async (userRef, includes) => {
     try {
-        const addresses = await Address.find({ userRef });
+        const addresses = await Address.find({ userRef }, includes);
         return addresses;
     } catch (error) {
         console.log(error);
@@ -12,7 +12,7 @@ exports.getAddressesByUser = async (userRef) => {
 
 exports.getAddressById = async (id) => {
     try {
-        const address = await Address.findById(id);
+        const address = await Address.findById(id, 'line1 line2 city state pincode phoneNumber alternatePhoneNumber userRef');
         if (!address) {
             throw {
                 status: 404,
@@ -36,22 +36,8 @@ exports.createAddress = async (address) => {
     }
 }
 
-exports.updateAddress = async (id, addressData, userId) => {
+exports.updateAddress = async (id, addressData) => {
     try {
-        //  update address if it belongs to user
-        const address = await Address.findById(id);
-        if (!address) {
-            throw {
-                status: 404,
-                msg: 'Address not found'
-            };
-        }
-        if (address.userRef.toString() !== userId) {
-            throw {
-                status: 401,
-                msg: 'Unauthorized'
-            };
-        }
         const updatedAddress = await Address.findByIdAndUpdate(id, addressData, { new: true });
         if (!updatedAddress) {
             throw {
@@ -66,24 +52,26 @@ exports.updateAddress = async (id, addressData, userId) => {
     }
 }
 
-exports.deleteAddress = async (addressId, userId) => {
+exports.deleteAddress = async (addressId, userId, userType) => {
     try {
         // delete address if it belongs to user
-        const address = await Address.findById(addressId);
+        const address = await Address.findById(addressId, 'userRef');
         if (!address) {
             throw {
                 status: 404,
                 msg: 'Address not found'
             };
         }
-        if (address.userRef.toString() !== userId) {
+        if (userId === String(address.userRef) || userType === 'admin') {
+            await Address.findByIdAndDelete(addressId);
+            return true;
+        }
+        else {
             throw {
                 status: 401,
                 msg: 'Unauthorized'
             };
         }
-        await Address.findByIdAndDelete(addressId);
-        return true;
     } catch (error) {
         console.log(error);
         return false;

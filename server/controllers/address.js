@@ -1,48 +1,44 @@
 const { createAddress, deleteAddress, updateAddress, getAddressById, getAddressesByUser } = require('../services/address');
 
-//  @route  GET api/address/
+//  @route  GET api/address/:id
 //  @desc   Get address by id
 //  @access Protected
 exports.IgetAddressById = async (req, res) => {
     try {
-        const { addressId } = req.body;
-        const address = await getAddressById(addressId);
+        const id = req.params.id;
+        const address = await getAddressById(id);
         if (!address) {
             throw {
                 status: 404,
                 message: 'address not found!'
             }
         }
-        if (req.user._id !== address.userRef || req.user.role !== 'admin') {
+        console.log(String(address.userRef), req.user._id);
+        if (req.user._id === String(address.userRef) || req.user.userType === 'admin') {
+            res.status(200).json({address});
+        } else {
             throw {
                 status: 401,
                 message: 'unauthorized!'
             }
         }
-        res.status(200).json({address});
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
     }
 }
 
-//  @route  GET api/addresses/
+//  @route  GET api/address/
 //  @desc   get all addresses of user
 //  @access Protected
 exports.IgetAddressesByuser = async (req, res) => {
     try {
-        const { userId } = req.body;
+        const userId = req.user._id;
         const addresses = await getAddressesByUser(userId, 'line1');
         if (!addresses) {
             throw {
                 status: 404,
                 message: 'address not found!'
-            }
-        }
-        if (req.user._id !== address.userRef || req.user.role !== 'admin') {
-            throw {
-                status: 401,
-                message: 'unauthorized!'
             }
         }
         res.status(200).json({addresses});
@@ -81,14 +77,22 @@ exports.IcreateAddress = async (req, res) => {
     }
 }
 
-//  @route  PUT api/address/
+//  @route  PUT api/address/:id
 //  @desc   Update address
 //  @access Protected
 exports.IupdateAddress = async (req, res) => {
     try {
-        const { addressId, data } = req.body;
-        //  update address if user is owner
-        const updatedAddress = await updateAddress(addressId, data, req.user._id);
+        const addressData = req.body;
+        const addressId = req.params.id;
+        const userId = req.user._id;
+        const { userRef } = req.body;
+        if (userRef !== undefined) {
+            throw {
+                status: 400,
+                message: 'userRef cannot be updated!'
+            }
+        }
+        const updatedAddress = await updateAddress(addressId, addressData, userId);
         if (!updatedAddress) {
             throw {
                 status: 400,
@@ -102,13 +106,13 @@ exports.IupdateAddress = async (req, res) => {
     }
 }
 
-//  @route  DELETE api/address/
+//  @route  DELETE api/address/:id
 //  @desc   Delete address
 //  @access Protected
 exports.IdeleteAddress = async (req, res) => {
     try {
-        const { addressId } = req.body;
-        const deletedAddress = await deleteAddress(addressId, req.user._id);
+        const id = req.params.id;
+        const deletedAddress = await deleteAddress(id, req.user._id, req.user.userType);
         if (!deletedAddress) {
             throw {
                 status: 400,

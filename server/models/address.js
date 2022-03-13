@@ -36,6 +36,7 @@ const addressSchema = mongoose.Schema({
     userRef: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        select: false
     }
 });
 
