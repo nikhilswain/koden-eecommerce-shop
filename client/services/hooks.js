@@ -42,9 +42,9 @@ export async function useBearer() {
 
 // ? return bool based on expiry time of token
 export async function useAuth() {
-    const authToken = localStorage.getItem("authToken");
-    if (!authToken) return false
     try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) return false
         const { exp } = decode(authToken)
         if (exp < new Date().getTime() / 1000) {
             const res = await fetch("/api/auth/refresh", {
@@ -60,6 +60,7 @@ export async function useAuth() {
             if (res.status === 200) {
                 localStorage.setItem("authToken", data.tokens.authToken)
                 localStorage.setItem("refreshToken", data.tokens.refreshToken)
+                return true;
             }
             else {
                 alert('your refresh token is expired, please log in again!');
@@ -70,7 +71,6 @@ export async function useAuth() {
     } catch (error) {
         return false
     }
-    return true
 }
 
 // ? decode auth token and returns properties of User

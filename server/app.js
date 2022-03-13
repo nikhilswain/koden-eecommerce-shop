@@ -18,7 +18,7 @@ app.get('/api/test', (_, res) => {
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/user', isAuthenticated, require('./routes/user'));
-app.use('/api/product', isAuthenticated, require('./routes/product'));
+app.use('/api/product', require('./routes/product'));
 app.use('/api/cart', isAuthenticated, require('./routes/cart'));
 
 app.use('*', (req, res) => {
