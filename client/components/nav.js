@@ -7,14 +7,14 @@ export default function Nav() {
         <div>
             
         </div>
-        <nav className={styles.nav}>
-            <ul className={styles.ul}>
+        <nav className='flex justify-around items-center py-5 bg-gray-500 text-white'>
+            <ul>
                 <li>
                     <a href="/">Home</a>
                 </li>
             </ul>
-            <ul className={styles.ul}>
-            <li>
+            <ul className='flex gap-5'>
+            <li className=''>
                 <a href="/login">Login</a>
             </li>
             <li>
