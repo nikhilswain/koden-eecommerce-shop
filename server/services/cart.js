@@ -13,11 +13,16 @@ exports.getCart =  async (userRef) => {
                 status: 400
             }
         } else {
-            return user.cart;
+            return {
+                cart: user.cart,
+            };
         }
     } catch (error) {
         console.log(error);
-        return false;
+        return {
+            message: error.message,
+            status: error.status
+        }
     }
 }
 
@@ -36,20 +41,19 @@ exports.addToCart = async (userRef, productRef, quantity) => {
                 status: 400
             }
         }
-        const product = await Product.findOne({_id: productRef});
+        const product = await Product.findOne({_id: productRef}, 'name price quantity orderLimit');
         if (!product) {
             throw {
                 message: 'product not found!',
                 status: 404
             }
         } 
-        //!! TODO NOT WORKING
-        // if (product.quantity < quantity ) {
-        //     throw {
-        //         message: 'product quantity is not enough!',
-        //         status: 400
-        //     }
-        // }
+        if (product.orderLimit < quantity ) {
+            throw {
+                message: 'product order limit is ' + product.orderLimit,
+                status: 400
+            }
+        }
         const user = await User.findOne({_id: userRef});
         if (!user) {
             throw {
@@ -59,7 +63,14 @@ exports.addToCart = async (userRef, productRef, quantity) => {
         } 
         const item = user.cart.find(item => item.product.toString() === productRef.toString());
         if (item) {
-            item.quantity += quantity;
+            if (item.quantity + quantity > product.orderLimit) {
+                throw {
+                    message: 'product order limit is ' + product.orderLimit,
+                    status: 400
+                }
+            } else {
+                item.quantity += quantity;
+            }
         } else {
             user.cart.push({product: productRef, quantity});
         }
@@ -67,7 +78,10 @@ exports.addToCart = async (userRef, productRef, quantity) => {
         return user.cart;
     } catch (error) {
         console.log(error);
-        return false;
+        return {
+            message: error.message,
+            status: error.status
+        }
     }
 }
 
@@ -100,7 +114,10 @@ exports.removeFromCart = async (userRef, productRef) => {
         return user.cart;
     } catch (error) {
         console.log(error);
-        return false;
+        return {
+            message: error.message,
+            status: error.status
+        }
     }
 }
 
@@ -119,7 +136,10 @@ exports.resetCart = async (userRef) => {
         }
     } catch (error) {
         console.log(error);
-        return false;
+        return {
+            message: error.message,
+            status: error.status
+        }
     }
 }
 
@@ -173,6 +193,9 @@ exports.checkoutCart = async (userRef, addressRef) => {
         return newOrder;
     } catch (error) {
         console.log(error);
-        return false;
+        return {
+            message: error.message,
+            status: error.status
+        }
     }
 }

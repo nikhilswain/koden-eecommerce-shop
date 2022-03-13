@@ -1,5 +1,21 @@
 const Product = require("../models/product");
 
+exports.getLatestProducts = async (count) => {
+    try {
+        const products = await Product.find().sort({createdAt: -1}).limit(count);
+        if (!products) {
+            throw {
+                status: 404,
+                msg: 'Products not found'
+            };
+        }
+        return products;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
 exports.getAllProducts = async (includes) => {
     try {
         const products = await Product.find({}, includes);

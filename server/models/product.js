@@ -35,6 +35,12 @@ const productSchema = new mongoose.Schema(
             required: true,
             min: 0
         },
+        orderLimit: {
+            type: Number,
+            select: false,
+            required: true,
+            min: 1
+        },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',

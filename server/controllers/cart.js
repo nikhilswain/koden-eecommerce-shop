@@ -5,14 +5,11 @@ const { getCart, addToCart, removeFromCart, resetCart, checkoutCart } = require(
 //  @access Protected
 exports.IgetCart = async (req, res) => {
     try {
-        const cart = await getCart(req.user._id);
-        if (!cart) {
-            throw {
-                status: 404,
-                message: 'User not found!'
-            }
+        const out = await getCart(req.user._id);
+        if (out.cart === undefined) {
+            throw out;
         } else {
-            res.status(200).json({ cart });
+            res.status(200).json({ cart: out.cart });
         }
     } catch (error) {
         console.log(error);

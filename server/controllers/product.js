@@ -1,5 +1,25 @@
 const mongoose = require('mongoose');
-const { deleteProduct, getAllProducts, getProductsByCategory, getProduct, IgetProductById, postProduct, updateProduct } = require('../services/product');
+const { deleteProduct, getAllProducts, getLatestProducts, getProductsByCategory, getProduct, IgetProductById, postProduct, updateProduct } = require('../services/product');
+
+//  @route   GET api/product/latest?limit=:limit
+//  @desc    Get latest products
+//  @access  Public
+exports.IgetLatestProducts = async (req, res) => {
+    try {
+        const limit = req.query.limit;
+        const out = await getLatestProducts(limit);
+        if (!out) {
+            throw {
+                status: 400,
+                message: 'action failed!'
+            }
+        }
+        res.status(200).json({ products: out });
+    } catch (error) {
+        console.log(error);
+        res.status(error.status).json({ message: error.message });
+    }
+}
 
 //  @route   GET api/product/all
 //  @desc    Get all products
@@ -47,7 +67,7 @@ exports.IgetProductById = async (req, res) => {
                 message: "Invalid product id"
             }
         }
-        const product = await getProduct(productId);
+        const product = await getProduct(productId, 'name price description category orderLimit quantity image');
         res.status(200).json(product);
     } catch (error) {
         console.log(error);
