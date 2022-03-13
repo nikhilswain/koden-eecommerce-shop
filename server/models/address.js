@@ -25,6 +25,14 @@ const addressSchema = mongoose.Schema({
         type: Number,
         required: true
     },
+    phoneNumber: {
+        type: Number,
+        required: true
+    },
+    alternatePhoneNumber: {
+        type: Number,
+        required: false
+    },
     userRef: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

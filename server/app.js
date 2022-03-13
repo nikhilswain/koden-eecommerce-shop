@@ -13,13 +13,14 @@ app.use(helmet());
 
 // Test Route for Frontend
 app.get('/api/test', (_, res) => {
-    res.json({message: 'hello world'});
+    res.json({message: 'hello world!'});
 });
 
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/user', isAuthenticated, require('./routes/user'));
 app.use('/api/product', require('./routes/product'));
+app.use('/api/user', isAuthenticated, require('./routes/user'));
 app.use('/api/cart', isAuthenticated, require('./routes/cart'));
+app.use('/api/address', isAuthenticated, require('./routes/address'));
 
 app.use('*', (req, res) => {
     res.status(404).send('Not Found');

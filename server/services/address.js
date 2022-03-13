@@ -36,9 +36,23 @@ exports.createAddress = async (address) => {
     }
 }
 
-exports.updateAddress = async (id, address) => {
+exports.updateAddress = async (id, addressData, userId) => {
     try {
-        const updatedAddress = await Address.findByIdAndUpdate(id, address, { new: true });
+        //  update address if it belongs to user
+        const address = await Address.findById(id);
+        if (!address) {
+            throw {
+                status: 404,
+                msg: 'Address not found'
+            };
+        }
+        if (address.userRef.toString() !== userId) {
+            throw {
+                status: 401,
+                msg: 'Unauthorized'
+            };
+        }
+        const updatedAddress = await Address.findByIdAndUpdate(id, addressData, { new: true });
         if (!updatedAddress) {
             throw {
                 status: 404,
@@ -52,16 +66,24 @@ exports.updateAddress = async (id, address) => {
     }
 }
 
-exports.deleteAddress = async (id) => {
+exports.deleteAddress = async (addressId, userId) => {
     try {
-        const deletedAddress = await Address.findByIdAndDelete(id);
-        if (!deletedAddress) {
+        // delete address if it belongs to user
+        const address = await Address.findById(addressId);
+        if (!address) {
             throw {
                 status: 404,
                 msg: 'Address not found'
             };
         }
-        return deletedAddress;
+        if (address.userRef.toString() !== userId) {
+            throw {
+                status: 401,
+                msg: 'Unauthorized'
+            };
+        }
+        await Address.findByIdAndDelete(addressId);
+        return true;
     } catch (error) {
         console.log(error);
         return false;
