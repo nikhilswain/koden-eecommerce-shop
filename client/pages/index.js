@@ -25,27 +25,24 @@ export default function Home() {
 
   return (
     <div>
-      <div> 
         <Nav />
-      </div>
       {
         loading ? 
         (
-          <div className={styles.loading}>
+          <div className='text-purple-700'>
             <h1>Loading...</h1>
           </div>
         ) : (
-          <div className={styles.products}>
+          <div className='py-10'>
             {
               products.map((product, i) => (
-                <div className={styles.product} key={i}>
+                <div className='w-56' key={i}>
                   <div className={styles.image}>
-                    <img src={product.image || `https://dummyimage.com/600x400/000/fff&text=${product.name}`} width={200} height={200} />
+                    <img src={product.image || `https://dummyimage.com/600x400/000/fff&text=${product.name}`} />
                   </div>
-                  <div className={styles.info}>
-                    <h1>{product.name}</h1>
-                    <p>{product.description}</p>
-                    <p>{product.price}</p>
+                  <div className='text-center'>
+                    <h1 className='text-lg'>{product.name}</h1>
+                    <p className='text-base'>{product.price}</p>
                   </div>
                 </div>
               ))
