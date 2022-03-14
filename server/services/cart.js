@@ -151,7 +151,7 @@ exports.checkoutCart = async (userRef, addressRef) => {
                 status: 400
             }
         }
-        const user = await User.findOne({_id: userRef});
+        const user = await User.findOne({_id: userRef}).populate('cart.product');
         if (!user) {
             throw {
                 message: 'user not found!',
@@ -165,30 +165,34 @@ exports.checkoutCart = async (userRef, addressRef) => {
             }
         }
         //  TODO: create a Order object
-        const address = await Address.findOne({_id: addressRef});
+        const address = await Address.findOne({_id: addressRef}, 'userRef');
         if (!address) {
             throw {
                 message: 'address not found!',
                 status: 404
             }
         }
-        if (address.userRef.toString() !== userRef.toString()) {
+        if (String(address.userRef) !== userRef) {
             throw {
                 message: 'address not belong to user!',
                 status: 400
             }
         }
-        const price = user.cart.reduce((acc, item) => {
-            return acc + item.quantity * item.product.price;
-        }, 0);
+        // calculate total price
+        let totalPrice = 0;
+        user.cart.forEach(item => {
+            totalPrice += item.quantity * item.product.price;
+            console.log(totalPrice);
+        });
+        console.log(totalPrice);
         const order = {
             userRef,
             addressRef,
             products: user.cart,
-            price
+            price: totalPrice
         }
         const newOrder = await createOrder(order);
-        user.cart = [];
+        // user.cart = [];
         await user.save();
         return newOrder;
     } catch (error) {

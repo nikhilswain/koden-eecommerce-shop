@@ -28,6 +28,7 @@ exports.getOrderById = async (id) => {
 
 exports.createOrder = async (order) => {
     try {
+        // console.log(order);
         const newOrder = new Order(order);
         return await newOrder.save();
     } catch (error) {
