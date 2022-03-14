@@ -80,10 +80,10 @@ exports.IgetProductById = async (req, res) => {
 //  @access  Private
 exports.IpostProduct = async (req, res) => {
     try {
-        const { name, category, description, price, quantity } = req.body;
+        const { name, category, description, price, quantity, orderLimit } = req.body;
         const createdBy = req.user._id;
         const product = await postProduct({
-            name, category, description, price, quantity, createdBy
+            name, category, description, price, quantity, createdBy, orderLimit
         });
         res.status(200).json(product);
     } catch (error) {
