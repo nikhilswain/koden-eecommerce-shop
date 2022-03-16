@@ -4,9 +4,9 @@ const { createOrder } = require('./order');
 const Product = require('../models/product');
 const Address = require('../models/address');
 
-exports.getCart =  async (userRef) => {
+exports.getCart =  async (userRef, productDetail) => {
     try {
-        const user = await User.findOne({_id: userRef});
+        const user = await User.findOne({_id: userRef}).populate(productDetail ? 'cart.product' : '');
         if (!user) {
             throw {
                 message: 'user not found!',
@@ -85,7 +85,7 @@ exports.addToCart = async (userRef, productRef, quantity) => {
     }
 }
 
-exports.removeFromCart = async (userRef, productRef) => {
+exports.removeFromCart = async (userRef, productRef, hard) => {
     try {
         const product = await Product.findOne({_id: productRef});
         if (!product) {
@@ -101,13 +101,16 @@ exports.removeFromCart = async (userRef, productRef) => {
                 status: 404
             }
         } 
-        const item = user.cart.find(item => item.product.toString() === productRef.toString());
-        if (item) {
-            if (item.quantity >= 2) {
-                item.quantity -= 1;
-            } else {
-                user.cart.splice(user.cart.indexOf(item), 1);
-                // user.cart = user.cart.filter(item => item.product.toString() !== productRef.toString());
+        if (hard === true) {
+            user.cart = user.cart.filter(item => item.product.toString() !== productRef.toString());
+        } else {
+            const item = user.cart.find(item => item.product.toString() === productRef.toString());
+            if (item) {
+                if (item.quantity >= 2) {
+                    item.quantity -= 1;
+                } else {
+                    user.cart.splice(user.cart.indexOf(item), 1);
+                }
             }
         }
         await user.save();

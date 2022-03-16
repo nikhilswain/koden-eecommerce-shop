@@ -37,8 +37,22 @@ exports.createOrder = async (order) => {
     }
 }
 
-exports.updateOrder = async (id, order) => {
+exports.updateOrder = async (id, order, userId) => {
     try {
+        //  check if order belongs to user then update
+        const orderToUpdate = await Order.findById(id);
+        if (!orderToUpdate) {
+            throw {
+                status: 404,
+                msg: 'Order not found'
+            };
+        }
+        if (String(orderToUpdate.userRef) !== userId && userId !== 'admin') {
+            throw {
+                status: 401,
+                msg: 'Unauthorized'
+            };
+        }
         const updatedOrder = await Order.findByIdAndUpdate(id, order, { new: true });
         if (!updatedOrder) {
             throw {
@@ -69,9 +83,9 @@ exports.deleteOrder = async (id) => {
     }
 }
 
-exports.getOrdersByUserId = async (userId) => {
+exports.getOrdersByUserId = async (userId, showProducts) => {
     try {
-        const orders = await Order.find({ userRef: userId });
+        const orders = await Order.find({ userRef: userId }, '-userRef -__v ').populate(showProducts ? 'products.product' : '');
         return orders;
     } catch (error) {
         console.log(error);

@@ -1,11 +1,12 @@
 const { getCart, addToCart, removeFromCart, resetCart, checkoutCart } = require('../services/cart');
 
-//  @route GET api/cart/
+//  @route GET api/cart/?p=true [p is optional]
 //  @desc   Get cart
 //  @access Protected
 exports.IgetCart = async (req, res) => {
     try {
-        const out = await getCart(req.user._id);
+        const productDetail = req.query.p === 'true';
+        const out = await getCart(req.user._id, productDetail);
         if (out.cart === undefined) {
             throw out;
         } else {
@@ -45,12 +46,13 @@ exports.IaddToCart = async (req, res) => {
     }
 }
 
-//  @route  DELETE api/cart/
+//  @route  DELETE api/cart/:id
 //  @desc   Remove product from cart
 //  @access Protected
 exports.IremoveFromCart = async (req, res) => {
     try {
-        const out = await removeFromCart(req.user._id, req.body.product);
+        const hard = req.body.hard;
+        const out = await removeFromCart(req.user._id, req.params.id, hard === true);
         if (!out) {
             throw {
                 status: 400,

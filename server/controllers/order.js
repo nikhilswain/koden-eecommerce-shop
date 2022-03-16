@@ -5,7 +5,8 @@ const { getOrders, getOrderById, getOrdersByUserId, updateOrder, deleteOrder, ge
 //  @access  Private
 exports.IgetOrders = async (req, res) => {
     try {
-        const orders = await getOrdersByUserId(req.user._id);
+        const p = req.query.p === 'true';
+        const orders = await getOrdersByUserId(req.user._id, p);
         res.status(200).json(orders);
     } catch (error) {
         console.log(error);
@@ -83,12 +84,11 @@ exports.IgetOrdersByProductId = async (req, res) => {
 
 //  @route   PUT api/order/:id
 //  @desc    Update order
-//  @access  Private
+//  @access  Protected
 exports.IupdateOrder = async (req, res) => {
     try {
         const orderId = req.params.id;
         const {
-            status,
             addressRef,
             isPaid
         } = req.body;
@@ -106,9 +106,81 @@ exports.IupdateOrder = async (req, res) => {
                 }
             }
         }
+        const currentOrder = await getOrderById(orderId);
+        if (!currentOrder) {
+            throw {
+                status: 404,
+                message: "Order not found"
+            }
+        }
+        const currentTime = new Date();
+        const orderTime = new Date(currentOrder.createdAt);
+        const diff = currentTime.getTime() - orderTime.getTime();
+        const diffHours = Math.floor((diff / (1000 * 60 * 60)));
+        if (diffHours > 12) {
+            throw {
+                status: 400,
+                message: "Order cannot be updated after 12 hrs of order creation"
+            }
+        }
         const order = await updateOrder(orderId, {
-            status, addressRef, isPaid
+            addressRef, isPaid
         });
+        res.status(200).json(order);
+    } catch (error) {
+        console.log(error);
+        res.status(error.status).json({ message: error.message });
+    }
+}
+
+//  @route   POST api/order/:id/cancel
+//  @desc    Cancel order
+//  @access  Private
+exports.IcancelOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            throw {
+                status: 400,
+                message: "Invalid order id"
+            }
+        }
+        const order = await getOrderById(req.params.id);
+        if (!order) {
+            throw {
+                status: 404,
+                msg: 'Order not found'
+            };
+        }
+        if (String(order.userRef) !== req.user._id && req.user.userType !== 'admin') {
+            throw {
+                status: 401,
+                msg: 'Unauthorized'
+            };
+        }
+        const updatedOrder = await updateOrder(orderId, {
+            status: 'cancelled'
+        }, req.user._id);
+        res.status(200).json({order: updatedOrder});
+    } catch (error) {
+        console.log(error);
+        res.status(error.status).json({ message: error.message });
+    }
+}
+
+//  @route   DELETE api/order/:id
+//  @desc    Delete order
+//  @access  Private
+exports.IdeleteOrder = async (req, res) => {
+    try {
+        const orderId = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            throw {
+                status: 400,
+                message: "Invalid order id"
+            }
+        }
+        const order = await deleteOrder(orderId, req.user._id);
         res.status(200).json(order);
     } catch (error) {
         console.log(error);

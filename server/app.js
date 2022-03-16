@@ -20,6 +20,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/product', require('./routes/product'));
 app.use('/api/user', isAuthenticated, require('./routes/user'));
 app.use('/api/cart', isAuthenticated, require('./routes/cart'));
+app.use('/api/order', isAuthenticated, require('./routes/order'));
 app.use('/api/address', isAuthenticated, require('./routes/address'));
 
 app.use('*', (req, res) => {

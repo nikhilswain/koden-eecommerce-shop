@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const { deleteProduct, getAllProducts, getLatestProducts, getProductsByCategory, getProduct, postProduct, updateProduct } = require('../services/product');
-const { createOrder } = require('./order');
+const { deleteProduct, getAllProducts, getLatestProducts, getProductsByCategory, getProduct, postProduct, updateProduc } = require('../services/product');
+const { createOrder } = require('../services/order');
 
 //  @route   GET api/product/latest?limit=:limit
 //  @desc    Get latest products
@@ -162,16 +162,16 @@ exports.IcheckoutProduct = async (req, res) => {
             }
         }
         const order = {
-            userRef,
+            userRef: req.user._id,
             addressRef,
             products: [{
-                productRef: productId,
+                product: productId,
                 quantity: quantity
             }],
             price: product.price * quantity
         }
         const newOrder = await createOrder(order);
-        return newOrder;
+        res.status(200).json({order: newOrder});
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
