@@ -141,14 +141,21 @@ exports.IcheckoutProduct = async (req, res) => {
     try {
         const productId = req.params.id;
         const addressRef = req.body.address;
+        const quantity = req.body.quantity;
         if (!mongoose.Types.ObjectId.isValid(productId) || !mongoose.Types.ObjectId.isValid(addressRef)) {
             throw {
                 status: 400,
                 message: "Invalid id"
             }
         }
+        if (quantity <= 0) {
+            throw {
+                status: 400,
+                message: "Invalid quantity"
+            }
+        }
         const product = await getProduct(productId);
-        if (productQuantity > product.orderLimit) {
+        if (quantity > product.orderLimit) {
             throw {
                 status: 400,
                 message: "Order limit exceeded"
@@ -159,9 +166,9 @@ exports.IcheckoutProduct = async (req, res) => {
             addressRef,
             products: [{
                 productRef: productId,
-                quantity: 1
+                quantity: quantity
             }],
-            price: product.price
+            price: product.price * quantity
         }
         const newOrder = await createOrder(order);
         return newOrder;
