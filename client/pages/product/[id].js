@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useBearer } from '../../services/hooks'
 import Nav from '../../components/nav'
 import Route from 'next/router'
 
@@ -30,8 +31,28 @@ export default function ProductSpecificPage(props) {
       console.log(loading);
   }, [])
 
-  const toCart = () => {
-    Route.push('/cart')
+  const toCart = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/cart', {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "Authorization": await useBearer()
+        },
+        body: JSON.stringify({
+          product: product._id,
+          quantity: 1
+        })
+      });
+      const data = await res.json();
+      console.log(data);
+      setLoading(false);
+      Route.push('/cart');
+    } catch(err) {
+      console.log(err);
+      setLoading(false);
+    }
   }
   
   const buyNow = () => {
