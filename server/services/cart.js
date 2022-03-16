@@ -192,7 +192,7 @@ exports.checkoutCart = async (userRef, addressRef) => {
             price: totalPrice
         }
         const newOrder = await createOrder(order);
-        // user.cart = [];
+        user.cart = [];
         await user.save();
         return newOrder;
     } catch (error) {

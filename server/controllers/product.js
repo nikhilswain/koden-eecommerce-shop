@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const { deleteProduct, getAllProducts, getLatestProducts, getProductsByCategory, getProduct, IgetProductById, postProduct, updateProduct } = require('../services/product');
+const { deleteProduct, getAllProducts, getLatestProducts, getProductsByCategory, getProduct, postProduct, updateProduct } = require('../services/product');
+const { createOrder } = require('./order');
 
 //  @route   GET api/product/latest?limit=:limit
 //  @desc    Get latest products
@@ -127,6 +128,43 @@ exports.IdeleteProduct = async (req, res) => {
         }
         const product = await deleteProduct(productId);
         res.status(200).json(product);
+    } catch (error) {
+        console.log(error);
+        res.status(error.status).json({ message: error.message });
+    }
+}
+
+//  @route   POST api/product/:id/checkout
+//  @desc    place order on product directly
+//  @access  Private
+exports.IcheckoutProduct = async (req, res) => {
+    try {
+        const productId = req.params.id;
+        const addressRef = req.body.address;
+        if (!mongoose.Types.ObjectId.isValid(productId) || !mongoose.Types.ObjectId.isValid(addressRef)) {
+            throw {
+                status: 400,
+                message: "Invalid id"
+            }
+        }
+        const product = await getProduct(productId);
+        if (productQuantity > product.orderLimit) {
+            throw {
+                status: 400,
+                message: "Order limit exceeded"
+            }
+        }
+        const order = {
+            userRef,
+            addressRef,
+            products: [{
+                productRef: productId,
+                quantity: 1
+            }],
+            price: product.price
+        }
+        const newOrder = await createOrder(order);
+        return newOrder;
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
