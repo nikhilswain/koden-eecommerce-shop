@@ -1,4 +1,5 @@
 const Address = require('../models/address');
+const Order = require('../models/order');
 
 exports.getAddressesByUser = async (userRef, includes) => {
     try {
@@ -36,14 +37,32 @@ exports.createAddress = async (address) => {
     }
 }
 
-exports.updateAddress = async (id, addressData) => {
+exports.updateAddress = async (id, addressData, userRef) => {
     try {
-        const updatedAddress = await Address.findByIdAndUpdate(id, addressData, { new: true });
-        if (!updatedAddress) {
+        const address = await Address.findById(id, 'userRef');
+        if (!address) {
             throw {
                 status: 404,
                 msg: 'Address not found'
             };
+        }
+        //  check if this address is being used by any order which is in 'ongoing' status
+        //  if no, then update the order's address
+        const orders = await Order.find({ addressRef: id, status: 'ongoing' });
+        if (orders.length > 0) {
+            throw {
+                status: 400,
+                msg: 'Address is being used by ongoing order'
+            };
+        }
+        if (userRef === String(address.userRef)) {
+            const updatedAddress = await Address.findByIdAndUpdate(id, addressData, { new: true });
+            if (!updatedAddress) {
+                throw {
+                    status: 404,
+                    msg: 'Address not found'
+                };
+            }
         }
         return updatedAddress;
     } catch (error) {
