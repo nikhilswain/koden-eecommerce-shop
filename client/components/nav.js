@@ -2,6 +2,7 @@ import React from 'react'
 import { useAuth, useReset } from '../services/hooks'
 import Link from "next/link";
 
+
 export default function Nav() {
 
   function Logout() {
@@ -25,13 +26,13 @@ export default function Nav() {
                       useAuth() ? (
                           <div className='flex gap-6 items-center'>
                             <Link href="/profile"><a>My Profile</a></Link>
-                              <Link href="/cart" >
-                                <a className='flex gap-2 items-center'>
-                                  <img width={30} src='data:image/svg+xml;utf8;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIxLjUsMTVhMywzLDAsMCwwLTEuOS0yLjc4bDEuODctN2ExLDEsMCwwLDAtLjE4LS44N0ExLDEsMCwwLDAsMjAuNSw0SDYuOEw2LjQ3LDIuNzRBMSwxLDAsMCwwLDUuNSwyaC0yVjRINC43M2wyLjQ4LDkuMjZhMSwxLDAsMCwwLDEsLjc0SDE4LjVhMSwxLDAsMCwxLDAsMkg1LjVhMSwxLDAsMCwwLDAsMkg2LjY4YTMsMywwLDEsMCw1LjY0LDBoMi4zNmEzLDMsMCwxLDAsNS44MiwxLDIuOTQsMi45NCwwLDAsMC0uNC0xLjQ3QTMsMywwLDAsMCwyMS41LDE1Wm0tMy45MS0zSDlMNy4zNCw2SDE5LjJaTTkuNSwyMGExLDEsMCwxLDEsMS0xQTEsMSwwLDAsMSw5LjUsMjBabTgsMGExLDEsMCwxLDEsMS0xQTEsMSwwLDAsMSwxNy41LDIwWiIvPjwvc3ZnPg=='></img>
-                                  <span>Cart</span>
-                                </a>
-                              </Link> 
-                              <Link onClick={Logout} href="#">logout</Link>
+                            <Link href="/orders"><a>My Orders</a></Link>
+                            <Link href="/cart" >
+                              <a className='flex gap-2 items-center' title="cart">
+                                <img src='/cart.svg' alt='cart' className='w-6 h-6'/>
+                              </a>
+                            </Link> 
+                            <Link onClick={Logout} href="#">Logout</Link>
                           </div>
                       ) : (
                           <Link href="/login">Login</Link>

@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from 'react'
 import { useBearer } from '../../services/hooks'
 import Nav from '../../components/nav'
+import Checkout from '../../components/checkout'
 import Route from 'next/router'
 
 export async function getServerSideProps(context) {
   return {
-      props: {
-          id: context.params.id
-      }
+    props: {
+      id: context.params.id
+    }
   }
 }
 
 export default function ProductSpecificPage(props) {
   const [product, setProduct] = useState({})
   const [loading, setLoading] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
 
-  useEffect(() => {
-    fetch('/api/product/' + props.id)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        setProduct(data);
-      })
-      .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
+  useEffect(async () => {
+    try {
+      const productRes = await fetch('/api/product/' + props.id)
+      const productData = await productRes.json()
+      if (productRes.ok === true) {
+        setProduct(productData);
         setLoading(false);
-      });
-      console.log(loading);
+      } else {
+        alert(productData.message);
+      }
+    } catch (error) {
+      console.log(error); 
+      setLoading(false);
+    }
   }, [])
 
   const toCart = async () => {
@@ -54,25 +56,23 @@ export default function ProductSpecificPage(props) {
       setLoading(false);
     }
   }
-  
+
   const buyNow = () => {
-    Route.push('#')
+    setIsOpen(!isOpen);
   }
 
   return (
     <div>
       <Nav />
     {
-      
-          loading === true ?
-        (
+      loading === true ? (
         <div>
           <h1>Loading...</h1>
         </div>
-        )
-        :
-        (
+      )
+      : (
         <div className='grid py-6 px-8 gap-2'>
+          { isOpen ? <Checkout closeCallback={buyNow} product={product} type={'product'} /> : null }
           <div className='flex gap-6'>
             <div className='w-80'>
               <img src={product.image || `https://dummyimage.com/600x400/000/fff&text=${product.name}`} />
@@ -85,13 +85,13 @@ export default function ProductSpecificPage(props) {
                 (product.quantity > 0) ? <p className=' text-base text-green-500'>In stock</p> : <p className='text-base text-red-600'>Out of stock</p>
               }
             </div>
-            </div>
-            <div className='flex gap-4'>
-              <button onClick={() => buyNow()} className='bg-red-500 hover:bg-red-600 text-white text-lg py-1 px-9'>Buy Now</button>
-              <button onClick={() => toCart()} className='bg-orange-500 hover:bg-orange-600 text-white text-lg py-1 px-9'>Add to Cart</button>
-            </div>
           </div>
-          )
+          <div className='flex gap-4'>
+            <button onClick={() => buyNow()} className='bg-red-500 hover:bg-red-600 text-white text-lg py-1 px-4'>Checkout Now</button>
+            <button onClick={() => toCart()} className='bg-orange-500 hover:bg-orange-600 text-white text-lg py-1 px-7'>Add to Cart</button>
+          </div>
+        </div>
+      )
     }
     </div>
   )
