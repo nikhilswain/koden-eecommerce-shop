@@ -13,7 +13,6 @@ exports.IgetAddressById = async (req, res) => {
                 message: 'address not found!'
             }
         }
-        console.log(String(address.userRef), req.user._id);
         if (req.user._id === String(address.userRef) || req.user.userType === 'admin') {
             res.status(200).json({address});
         } else {

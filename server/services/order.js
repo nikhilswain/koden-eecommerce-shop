@@ -10,9 +10,9 @@ exports.getOrders = async () => {
     }
 }
 
-exports.getOrderById = async (id) => {
+exports.getOrderById = async (id, wantAddressDetail) => {
     try {
-        const order = await Order.findById(id);
+        const order = await Order.findById(id).populate(wantAddressDetail ? 'products.product' : null);
         if (!order) {
             throw {
                 status: 404,

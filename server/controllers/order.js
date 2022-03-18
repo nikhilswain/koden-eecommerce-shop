@@ -1,4 +1,5 @@
 const { getOrders, getOrderById, getOrdersByUserId, updateOrder, deleteOrder, getOrdersByProductId, getOrdersByStatus } = require('../services/order');
+const mongoose = require('mongoose');
 
 //  @route   GET api/order
 //  @desc    Get all orders of user
@@ -19,7 +20,8 @@ exports.IgetOrders = async (req, res) => {
 //  @access  Private
 exports.IgetOrderById = async (req, res) => {
     try {
-        const order = await getOrderById(req.params.id);
+        const addressDetail = req.query.p === 'true';
+        const order = await getOrderById(req.params.id, addressDetail);
         if (!order) {
             throw {
                 status: 404,
@@ -120,7 +122,13 @@ exports.IupdateOrder = async (req, res) => {
         if (diffHours > 12) {
             throw {
                 status: 400,
-                message: "Order cannot be updated after 12 hrs of order creation"
+                message: "Order cannot be updated after 12 hrs of order creation, please contact admin"
+            }
+        }
+        if (currentOrder.status !== 'ongoing') {
+            throw {
+                status: 400,
+                message: "Order cannot be updated under current status"
             }
         }
         const order = await updateOrder(orderId, {
@@ -149,13 +157,24 @@ exports.IcancelOrder = async (req, res) => {
         if (!order) {
             throw {
                 status: 404,
-                msg: 'Order not found'
+                message: 'Order not found'
             };
         }
         if (String(order.userRef) !== req.user._id && req.user.userType !== 'admin') {
             throw {
                 status: 401,
-                msg: 'Unauthorized'
+                message: 'Unauthorized'
+            };
+        }
+        //  user can cancel order only before 24 hrs of order creation
+        const currentTime = new Date();
+        const orderTime = new Date(order.createdAt);
+        const diff = currentTime.getTime() - orderTime.getTime();
+        const diffHours = Math.floor((diff / (1000 * 60 * 60)));
+        if (diffHours > 24) {
+            throw {
+                status: 400,
+                message: 'Order cannot be cancelled after 24 hrs of order creation'
             };
         }
         const updatedOrder = await updateOrder(orderId, {
