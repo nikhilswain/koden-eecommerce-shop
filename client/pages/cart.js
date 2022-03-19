@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { useBearer } from '../services/hooks'
 import Link from 'next/link';
-import Nav from '../components/Nav'
+import Nav from '../components/nav'
 import Checkout from '../components/checkout'
 
 export default function Cart() {

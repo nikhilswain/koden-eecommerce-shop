@@ -177,7 +177,7 @@ export default function OrderSpecificPage(props) {
             <p>Pin:{address.pincode}</p>
             <p>Phone Number: {address.phoneNumber}</p>
             <p>Alternative Phone Number: {address.alternativePhoneNumber}</p>
-          </div >
+          </div>
           {
             order.status === 'ongoing' ? (
               <div className='flex justify-center gap-10 mt-5'>
