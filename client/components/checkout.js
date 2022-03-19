@@ -31,7 +31,9 @@ export default function ({ product, cart, type, closeCallback }) {
       } else {
         alert(addressesData.message);
       }
-      modalRef.current.showModal();
+      if (modalRef.current.hasAttribute('open') === false) {
+        modalRef.current.showModal();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +110,7 @@ export default function ({ product, cart, type, closeCallback }) {
     return (
       <dialog ref={modalRef} className='relative w-9/12 border min-h-96' >
           <button className='absolute top-3 right-3 border-none focus:outline-none' onClick={closeModal}>
-            <span className='text-red-500 text-lg'>&times;</span>
+            <span className='text-red-500 text-3xl'>&times;</span>
           </button>
           <h1 className='text-center font-black text-2xl mb-4'>{type.toUpperCase()} CHECKOUT</h1>
           <div className='mb-8' >
@@ -123,7 +125,7 @@ export default function ({ product, cart, type, closeCallback }) {
                   {
                     addresses.map(address => (
                       <div key={address._id}>
-                        <input name={address._id} type='radio' className='mr-3' onChange={e => {setSelectedAddress(e.target.value)}} value={address._id} />
+                        <input name='address' type='radio' className='mr-3' onChange={e => {setSelectedAddress(e.target.value)}} value={address._id} />
                         <label id={address._id}>{(address.line1)}</label> 
                       </div>
                     ))

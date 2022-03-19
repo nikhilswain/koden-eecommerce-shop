@@ -17,7 +17,7 @@ exports.getAddressById = async (id) => {
         if (!address) {
             throw {
                 status: 404,
-                msg: 'Address not found'
+                message: 'Address not found'
             };
         }
         return address;
@@ -43,7 +43,7 @@ exports.updateAddress = async (id, addressData, userRef) => {
         if (!address) {
             throw {
                 status: 404,
-                msg: 'Address not found'
+                message: 'Address not found'
             };
         }
         //  check if this address is being used by any order which is in 'ongoing' status
@@ -52,7 +52,7 @@ exports.updateAddress = async (id, addressData, userRef) => {
         if (orders.length > 0) {
             throw {
                 status: 400,
-                msg: 'Address is being used by ongoing order'
+                message: 'Address is being used by ongoing order'
             };
         }
         if (userRef === String(address.userRef)) {
@@ -60,25 +60,37 @@ exports.updateAddress = async (id, addressData, userRef) => {
             if (!updatedAddress) {
                 throw {
                     status: 404,
-                    msg: 'Address not found'
+                    message: 'Address not found'
                 };
             }
+            return updatedAddress;
+        } else {
+            throw {
+                status: 401,
+                message: 'Unauthorized'
+            };
         }
-        return updatedAddress;
     } catch (error) {
         console.log(error);
-        return false;
+        return error;
     }
 }
 
 exports.deleteAddress = async (addressId, userId, userType) => {
     try {
         // delete address if it belongs to user
+        const orders = await Order.find({ addressRef: addressId, status: 'ongoing', userRef: userId });
+        if (orders.length > 0) {
+            throw {
+                status: 400,
+                message: 'Address is being used by ongoing order'
+            };
+        }
         const address = await Address.findById(addressId, 'userRef');
         if (!address) {
             throw {
                 status: 404,
-                msg: 'Address not found'
+                message: 'Address not found'
             };
         }
         if (userId === String(address.userRef) || userType === 'admin') {
@@ -88,11 +100,11 @@ exports.deleteAddress = async (addressId, userId, userType) => {
         else {
             throw {
                 status: 401,
-                msg: 'Unauthorized'
+                message: 'Unauthorized'
             };
         }
     } catch (error) {
         console.log(error);
-        return false;
+        return error;
     }
 }

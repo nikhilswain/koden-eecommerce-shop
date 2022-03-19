@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dicebear/avatars": "^4.10.2",
+    "@dicebear/avatars-avataaars-sprites": "^4.10.2",
     "date-and-time": "^2.3.0",
     "jwt-decode": "^3.1.2",
     "next": "12.1.0",

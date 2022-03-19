@@ -33,7 +33,7 @@ exports.IgetAddressById = async (req, res) => {
 exports.IgetAddressesByuser = async (req, res) => {
     try {
         const userId = req.user._id;
-        const addresses = await getAddressesByUser(userId, 'line1');
+        const addresses = await getAddressesByUser(userId, 'line1 line2 pincode city state phoneNumber alternatePhoneNumber');
         if (!addresses) {
             throw {
                 status: 404,
@@ -91,14 +91,11 @@ exports.IupdateAddress = async (req, res) => {
                 message: 'userRef cannot be updated!'
             }
         }
-        const updatedAddress = await updateAddress(addressId, addressData, userId);
-        if (!updatedAddress) {
-            throw {
-                status: 400,
-                message: 'action failed!'
-            }
+        const out = await updateAddress(addressId, addressData, userId);
+        if (out.status !== undefined) {
+            throw out;
         }
-        res.status(200).json({address: updatedAddress});
+        res.status(200).json({address: out});
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
@@ -111,14 +108,11 @@ exports.IupdateAddress = async (req, res) => {
 exports.IdeleteAddress = async (req, res) => {
     try {
         const id = req.params.id;
-        const deletedAddress = await deleteAddress(id, req.user._id, req.user.userType);
-        if (!deletedAddress) {
-            throw {
-                status: 400,
-                message: 'action failed!'
-            }
+        const out = await deleteAddress(id, req.user._id, req.user.userType);
+        if (out.status !== undefined) {
+            throw out;
         }
-        res.status(200).json({address: deletedAddress});
+        res.status(200).json({address: out});
     } catch (error) {
         console.log(error);
         res.status(error.status).json({ message: error.message });
