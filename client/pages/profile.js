@@ -35,6 +35,16 @@ import { useBearer } from '../services/hooks'
           "Authorization": await useBearer()
         }
       })
+      .then(res => res.json())
+      .then(data => {
+         
+        // setAddress(data)
+        console.log(data)
+      })
+      .catch(err => console.log(err))
+      .finally( () => {
+        setLoading(false)
+      })
       
     }, [])
 
@@ -61,7 +71,9 @@ import { useBearer } from '../services/hooks'
                 }
               </div>
 
-            {/* <div className='bg-gray-200 px-12 py-8 leading-loose shadow hover:shadow-lg'>
+{
+  address.map(address => {
+    <div className='bg-gray-200 px-12 py-8 leading-loose shadow hover:shadow-lg'>
             <h1 className='text-bold text-2xl mb-4'>Adress Details</h1>
             <p>Line 1: {address.line1}</p>
             {
@@ -71,7 +83,10 @@ import { useBearer } from '../services/hooks'
             <p>Pin:{address.pincode}</p>
             <p>Phone Number: {address.phoneNumber}</p>
             <p>Alternative Phone Number: {address.alternativePhoneNumber}</p>
-          </div> */}
+          </div>
+  })
+}
+                
                 
 
               </div>
