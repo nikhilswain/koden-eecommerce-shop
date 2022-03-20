@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth, useBearer, useUser, useReset } from "../services/hooks";
-import styles from "../styles/Test.module.css";
+import styles from "../styles/test.module.css";
 
 export default function Test() {
     const [auth, setAuth] = useState(false);
