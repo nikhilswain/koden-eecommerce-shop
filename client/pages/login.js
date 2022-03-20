@@ -16,7 +16,7 @@ export default function Login(){
     setSuccess(false);
     setSuccessMessage("");
     setErrorMessage("");
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/api/login', {
       method: "POST",
       headers: {
         "content-type": "application/json"
