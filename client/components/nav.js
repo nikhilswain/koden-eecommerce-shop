@@ -15,9 +15,15 @@ export default function Nav() {
             
         </div>
         <nav className='flex justify-around items-center py-5 bg-gray-500 text-white'>
-            <ul>
+            <ul className='flex gap-6'>
               <li>
                 <Link href="/">Home</Link>
+              </li>
+              <li>
+                <Link href="/product">Products</Link>
+              </li>
+              <li>
+                <Link href="/category">Categories</Link>
               </li>
             </ul>
             <ul className='flex gap-5 items-center'>

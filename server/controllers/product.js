@@ -22,6 +22,19 @@ exports.IgetLatestProducts = async (req, res) => {
     }
 }
 
+//  @route   GET api/product/category
+//  @desc    get categories // ? whenever adding new category, add it to this list too!
+//  @access  Public
+exports.IgetCategory = async (req, res) => {
+    try {
+        const categories = ['electronics', 'clothes', 'cosmetics', 'others'];
+        res.status(200).json(categories);
+    } catch (error) {
+        console.log(error);
+        res.status(error.status).json({ message: error.message });
+    }
+}
+
 //  @route   GET api/product/all
 //  @desc    Get all products
 //  @access  Public

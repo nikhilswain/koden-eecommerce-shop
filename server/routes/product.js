@@ -1,8 +1,9 @@
 const router = require("express").Router();
-const { IdeleteProduct, IgetProductById, IgetLatestProducts, IgetProduct, IgetProductsByCategory, IpostProduct, IupdateProduct, IcheckoutProduct } = require("../controllers/product");
+const { IdeleteProduct, IgetProductById, IgetLatestProducts, IgetCategory, IgetProduct, IgetProductsByCategory, IpostProduct, IupdateProduct, IcheckoutProduct } = require("../controllers/product");
 const { isAuthenticated, isManager } = require("../middlewares/auth");
 
 router.get('/all', IgetProduct);
+router.get('/category/', IgetCategory);
 router.get('/latest', IgetLatestProducts);
 router.get('/:id', IgetProductById);
 router.get('/category/:category', IgetProductsByCategory);
