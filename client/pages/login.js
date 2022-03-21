@@ -39,20 +39,21 @@ export default function Login(){
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
-        <label htmlFor="email">Email</label>
-        <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      </div>
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input type="password" className="form-control" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </div>
-      <button type="submit" className="btn btn-primary">Submit</button>
-      {loading && <p>Loading...</p>}
-      {success && <p>{successMessage}</p>}
-      {error && <p>{errorMessage}</p>}
-    </form>
+    
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email">Email</label>
+          <input type="email" className="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input type="password" className="form-control" id="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <button type="submit" className="btn btn-primary">Submit</button>
+        {loading && <p>Loading...</p>}
+        {success && <p>{successMessage}</p>}
+        {error && <p>{errorMessage}</p>}
+      </form>
 
   )
   }
