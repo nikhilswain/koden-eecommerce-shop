@@ -30,12 +30,12 @@ export default function Product() {
             <h1>Loading...</h1>
           </div>
         ) : (
-          <div className='py-10 grid grid-cols-3 grid-flow-row auto-rows-max place-items-center gap-8'>
+          <div className='py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row auto-rows-max place-items-center gap-8'>
             {
               products.map((product, i) => (
                 <Link href={`/product/${product._id}`} key={i}>
-                <a className="hover:bg-gray-300">
-                  <div className='w-56' >
+                <a className="bg-gray-100 hover:shadow-xl hover:bg-gray-200 w-80 sm:w-60">
+                  <div className='w-full' >
                     <div>
                       <img src={product.image || `https://dummyimage.com/600x400/000/fff&text=${product.name}`} />
                     </div>
