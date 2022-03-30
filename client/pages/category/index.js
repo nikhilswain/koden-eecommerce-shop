@@ -31,13 +31,13 @@ export default function Category() {
         (
           <>
             <h1 className='text-3xl text-black text-center py-3'>Categories</h1>
-            <div className='grid grid-cols-2 items-center'>
+            <div className='grid grid-cols- sm:grid-cols-2 items-center'>
               {category.map((category, i) => (
                 // create a kindof card component here for each category
-                <div key={i}>
+                <div key={i} className="w-80 sm:w-72 md:w-80 lg:w-96 mx-auto bg-white shadow-xl rounded my-8">
                   <Link href={`/category/${category}`}>
                   <a>
-                    <div className="max-w-md mx-auto bg-white shadow-xl rounded my-8">
+                    <div >
                       <img src={'https://dummyimage.com/600x400/000/fff&text='+category} alt={category} />
                       <p className='py-3 px-2 text-center text-bolder'>{category}</p>
                     </div>

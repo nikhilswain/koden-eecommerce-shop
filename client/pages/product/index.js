@@ -21,13 +21,13 @@ export default function Product() {
   }, []);
 
   return (
-    <div>
+    <div className='h-screen'>
         <Nav />
       {
         loading ? 
         (
-          <div className='text-purple-700'>
-            <h1>Loading...</h1>
+          <div className='w-full h-full grid place-items-center'>
+            loading...
           </div>
         ) : (
           <div className='py-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 grid-flow-row auto-rows-max place-items-center gap-8'>
