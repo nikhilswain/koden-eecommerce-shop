@@ -38,7 +38,7 @@ export default function Nav() {
                                 <img src='/cart.svg' alt='cart' className='w-6 h-6'/>
                               </a>
                             </Link> 
-                            <Link onClick={Logout} href="#">Logout</Link>
+                            <Link onClick={Logout} href="/login">Logout</Link>
                           </div>
                       ) : (
                           <Link href="/login">Login</Link>
