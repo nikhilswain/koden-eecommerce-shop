@@ -8,7 +8,16 @@ import * as style from '@dicebear/avatars-avataaars-sprites';
 export default function Profile() {
 
   const [profile, setProfile] = useState([])
-  const [address, setAddress] = useState([])
+  const [address, setAddress] = useState([{
+    line1: '123',
+    line2: '133',
+    pincode: '123',
+    city: '123',
+    state: '123',
+    phoneNumber: '123',
+    alternatePhoneNumber: '132'
+  }])
+  const [newAddress, setNewAddress] = useState({})
   const [selectedAddress, setSelectedAddress] = useState([])
   const [loading, setLoading] = useState(true)
   const [isOpen, setIsOpen] = useState(false)
@@ -46,6 +55,8 @@ export default function Profile() {
     }
   }, [])
 
+
+
   async function deleteAddress(id) {
     if (confirm('Are you sure you want to delete this address?') === false)
       return;
@@ -72,12 +83,41 @@ export default function Profile() {
     }
   }
 
+  async function createNewAddress() {
+    if (newAddress.line1 === undefined || newAddress.line2 === undefined || newAddress.state === undefined || newAddress.city === undefined || newAddress.pincode === undefined || newAddress.phoneNumber === undefined || newAddress.alternativePhoneNumber === undefined) {
+      alert('Please fill out all fields')
+      return;
+    }
+    try {
+      const res = await fetch('/api/address', {
+        method: "Post",
+        headers: {
+          "content-type": "application/json",
+          "Authorization": await useBearer()
+        },
+        body: JSON.stringify(newAddress)
+      })
+      const data = await res.json()
+      if (res.ok === true) {
+        // window.location.reload();
+        //  add address to state
+        const newAddress = [...address, data.address]
+        setAddress(newAddress)
+        setNewAddress({})
+        console.log(address);
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+ 
   function openUpdateModal(addressObj) {
     setSelectedAddress(addressObj)
     // open a modal and pass in the address object
     setIsOpen(true)
   }
-
 
   function closeUpdateModal() {
     setIsOpen(false)
@@ -132,10 +172,45 @@ export default function Profile() {
                       </div>
                     )) : (
                       <div>
-                      <p className='text-center text-2xl mt-4'>No Address Found</p>
+                        <p className='text-center text-2xl mt-4'>No Address Found</p> 
                       </div>
-                    ) 
+                    )
                   }
+                   <details>
+                                <summary className='list-none w-fit py-1 px-2 bg-pink-500 rounded-md text-white cursor-pointer' >Add New Address</summary>
+                             
+                              <div className="leading-relax flex flex-col justify-center p-3 gap-5">
+                                <div className="flex gap-6">
+                                  <label htmlFor="line1">Line 1:</label>
+                                  <input className='border border-black px-4' defaultValue={newAddress.line1} onChange={e => {newAddress.line1 = e.target.value}} type="text" name="line1" id="line1" placeholder='state,district,locality'/>
+                                </div>
+                                <div className="flex gap-6">
+                                  <label htmlFor="line2">Line 2:</label>
+                                  <input onChange={e => {newAddress.line2 = e.target.value}} defaultValue={newAddress.line2} className='border border-black px-4 ' type="text" name="line1" id="line2" placeholder='Near by area, landmark (optional)'/>
+                                </div>
+                                <div className="flex gap-6">
+                                  <label htmlFor="city">City:</label>
+                                  <input onChange={e => (newAddress.city = e.target.value)}  className='border border-black px-4 ' type="text" name="city" id="city" placeholder='city'/>
+                                </div>
+                                <div className="flex gap-6">
+                                  <label htmlFor="state">State:</label>
+                                  <input onChange={e => (newAddress.state = e.target.value)}  className='border border-black px-4 ' type="text" name="state" id="state" placeholder='state'/>
+                                </div>
+                                <div className="flex gap-6">
+                                    <label htmlFor="pincode">Pincode:</label>
+                                    <input onChange={e => (newAddress.pincode = e.target.value)}  className='border border-black px-4 '  type="text" name="pincode" id="pincode" placeholder='pincode'/>
+                                </div>
+                                <div className="flex gap-6">
+                                    <label htmlFor="phone">Phone:</label>
+                                    <input onChange={e => (newAddress.phoneNumber = e.target.value)}  className='border border-black px-4 ' type="number" name="phone" id="phone" placeholder='phone'/>
+                                </div>
+                                <div className="flex gap-6">
+                                    <label htmlFor="altphone">Alternative Phone Number</label>
+                                    <input onChange={e => (newAddress.alternativePhoneNumber = e.target.value)}  className='border border-black px-4 ' type="number" name="altphone" id="altphone" placeholder='phone'/>
+                                </div>
+                              </div>
+                                <button onClick={createNewAddress} className='bg-blue-500 hover:shadow-xl text-white px-4 py-2 mt-3 rounded-lg'>Add Address</button>
+                              </details>
                 </div>
               </div>
             </div>
