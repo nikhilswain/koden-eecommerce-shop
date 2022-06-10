@@ -78,6 +78,7 @@ export default function Profile() {
     setIsOpen(true)
   }
 
+
   function closeUpdateModal() {
     setIsOpen(false)
   }
@@ -129,7 +130,11 @@ export default function Profile() {
                         <p>Phone Number: {address.phoneNumber}</p>
                         { address.alternativePhoneNumber !== undefined ? <p>Alternative Phone Number: {address.alternativePhoneNumber}</p> : null }
                       </div>
-                    )) : <p className='text-center text-2xl mt-4'>No Address Found</p>
+                    )) : (
+                      <div>
+                      <p className='text-center text-2xl mt-4'>No Address Found</p>
+                      </div>
+                    ) 
                   }
                 </div>
               </div>
