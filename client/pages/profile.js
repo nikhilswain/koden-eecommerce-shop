@@ -116,7 +116,7 @@ export default function Profile() {
                 <h1 className='text-bold text-2xl mb-4'>Shipping Addresses</h1>
                 <div className='grid gap-4'>
                   {
-                    address.length > 0 ?
+                    address?.length > 0 ?
                     address.map(address => (
                       <div className='p-4 bg-gray-100 relative' id={address._id} key={address._id}>
                         <div className='absolute top-3 right-4 space-x-3'>
